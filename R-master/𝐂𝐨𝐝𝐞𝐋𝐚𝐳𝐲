@@ -1,31 +1,35 @@
 js:
-    /*所在行          ThissAV①18
-                      123av②140
-                      bestjav③210
-                      𝐗𝐒𝐙𝐀𝐕④358
-                      Tktube⑤430
-                      supjav⑥510
-                      javguru⑦595
-                      7mmtv⑧675
-                      more⑨750
-                      cilijun⑩930
+    /*所在行          missAV①24
+                      123av②158
+                      bestjav③245
+                      𝐗𝐒𝐙𝐀𝐕④392
+                      Tktube⑤443
+                      supjav⑥523
+                      javguru⑦609
+                      7mmtv⑧688
+                      more⑨762
+                      cilijun⑩943
        */
     function CodeLazy(识别码) {
         识别码 = 识别码.toLowerCase()
         d.push({
             col_type: "line_blank",
         });
-        //missav
+        //missav        
+        if (!title || !img) {
+            var title = getVar("javdbtitle");
+            var img = getVar("javdbimg");
+        }
         d.push({
             title: '‘‘’’<b><middle><font color="#FF0000">𝐌𝐢𝐬𝐬𝐀𝐕</font></middle>',
             pic_url: 'https://img.vinua.cn/images/IQlH7.png',
             url: $('').lazyRule((识别码, title, img) => {
-                var search = "https://missav." + getPublicItem("missav", "live") + "/cn/search/" + 识别码;
-                var html = fetchCodeByWebView(search, {
+                var search = "https://missav" + getPublicItem("missav", ".live") + "/cn/search/" + 识别码;
+                var html = fetch(search, {
                     headers: {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0)'
                     },
-                    timeout: 4923
+                    //timeout: 4923
                 });
                 if (html) {
                     var list = pdfa(html, '.grid&&.relative:has(a[href])');
@@ -54,11 +58,14 @@ js:
                             } else {
                                 try {
                                     let index = miss.findIndex(r => r.title == input);
-                                    var html = fetchCodeByWebView(miss[index].url, {
+                                    if (miss[index].url.includes("uncensored")) {
+                                        title = title.replace(/\s/, "🔥")
+                                    }
+                                    var html = fetch(miss[index].url, {
                                         headers: {
                                             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0)'
                                         },
-                                        timeout: 4923
+                                        //timeout: 4923
                                     });
                                     const 标题 = pdfh(html, 'h1&&Text')
                                     const 图片 = pdfh(html, 'meta[property=og:image]&&content');
@@ -66,7 +73,7 @@ js:
                                     // 获取画质列表，并取最高画质
                                     let group_quality = fetch(source, {
                                         headers: {
-                                            "origin": "https://missav." + getPublicItem("missav", "live")
+                                            "origin": "https://missav." + getPublicItem("missav", ".live")
                                         }
                                     });
                                     //log(group_quality)
@@ -86,7 +93,7 @@ js:
                                         names: sortedNames,
                                         urls: sortedUrls,
                                         headers: new Array(hghest_quality.length).fill({
-                                            Referer: "https://missav." + getPublicItem("missav", "live") + "/"
+                                            Referer: "https://missav" + getPublicItem("missav", ".live") + "/"
                                         })
                                     });
                                     if (getVar("复制视频", "0") == "1") {
@@ -109,12 +116,12 @@ js:
                 longClick: [{
                     title: '查看搜索',
                     js: $.toString((识别码) => {
-                        return "https://missav." + getPublicItem("missav", "live") + "/cn/search/" + 识别码
+                        return "https://missav" + getPublicItem("missav", ".live") + "/cn/search/" + 识别码
                     }, 识别码)
                 }, {
-                    title: '线路' + getPublicItem("missav", "live"),
+                    title: '线路' + getPublicItem("missav", ".live"),
                     js: $.toString(() => {
-                        return $(["live", "ws", "ai"], 1).select(() => {
+                        return $(["123.com", ".live", ".ws", ".ai"], 1).select(() => {
                             setPublicItem("missav", input);
                             log("设置missav线路为:" + input)
                             refreshPage();
@@ -226,6 +233,11 @@ js:
                     title: '查看网址',
                     js: $.toString((识别码) => {
                         return "https://123av.com/zh/v/" + 识别码;
+                    }, 识别码)
+                }, {
+                    title: '搜索',
+                    js: $.toString((识别码) => {
+                        return "https://123av.com/zh/search?keyword=" + 识别码;
                     }, 识别码)
                 }]
             }
@@ -340,8 +352,7 @@ js:
                                     var video = JSON.parse(window0.atob(_0x2bbbcf(playdata, playkey)));
                                     var source = video[0].file
                                     source = source.startsWith("http") ? source : "https:" + source
-                                } catch {
-                                }
+                                } catch {}
                                 try {
                                     var group_quality = fetch(source);
                                     hghest_quality = group_quality.match(/^[^#\n]+/gm)
@@ -526,13 +537,13 @@ js:
                     return "hiker://empty"
                 } else {
                     var search = "https://supjav.com/zh/?s=" + 识别码.replace(/fc2.*?ppv.*?(\d+)/, "fc2ppv $1");
-                    var html = fetch(search, {
+                    var html = fetchCodeByWebView(search, {
                         headers: {
                             //"Cookie": "",
                             //"User-Agent": "",
                             //"Referer": "https://supjav.com/"
                         },
-                        timeout: 4923
+                        //timeout: 4923
                     });
                     if (html && !html.includes("Just a moment...")) {
                         var list = pdfa(html, '.posts&&.post');
@@ -855,9 +866,9 @@ js:
                     })
                     if (JavFinder.length == 0) {
                         var redirect = JSON.parse(fetch(search, {
-                            onlyHeaders: true,
-                            timeout: 4923
-                        }))
+                                onlyHeaders: true,
+                                timeout: 4923
+                            }))
                             .url
                         if (/\.ai\/\d+/.test(redirect)) {
                             JavFinder = [{

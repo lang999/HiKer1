@@ -1,20 +1,20 @@
 const Apollo = {
-    version: "20250509",
+    version: "20250929",
     empty: 'hiker://empty',
     url: "https://javfinder.ai",
     d: [],
-    getRangeColors: function () {
+    getRangeColors: function() {
         return '#' + ('00000' + (Math.random() * 0x1000000 << 0)
-            .toString(16))
+                .toString(16))
             .substr(-6);
     }, //随机颜色
-    pageAdd: function (page) {
+    pageAdd: function(page) {
         if (getMyVar("page")) {
             putMyVar("page", (parseInt(page) + 1) + '');
         }
         return;
     }, //翻页
-    pageMoveto: function (page, pages) {
+    pageMoveto: function(page, pages) {
         var longClick = [{
             title: "首页",
             js: $.toString(() => {
@@ -43,7 +43,7 @@ const Apollo = {
                 });
             }),
         }];
-        if (typeof (pages) != 'undefined') {
+        if (typeof(pages) != 'undefined') {
             var extra1 = {
                 title: "尾页" + pages,
                 js: $.toString((pages) => {
@@ -274,7 +274,7 @@ const Apollo = {
             col_type: "blank_block"
         });
         try {
-            if (typeof (拼接分类) != 'undefined' && 拼接分类 != '') {
+            if (typeof(拼接分类) != 'undefined' && 拼接分类 != '') {
                 var categories = pdfa(html, 大类定位).concat(pdfa(html, 拼接分类))
             } else {
                 var categories = pdfa(html, 大类定位)
@@ -298,10 +298,9 @@ const Apollo = {
                 let sub_categories = pdfa(category, 小类定位);
                 sub_categories.forEach((item, key) => {
                     let title = pdfh(item, 分类标题)
-                    if (typeof (排除) != 'undefined' && 排除 != '') {
+                    if (typeof(排除) != 'undefined' && 排除 != '') {
                         title = title.replace(new RegExp(排除, "g"), "")
-                    }
-                    ;
+                    };
                     Apollo.d.push({
                         title: key.toString() === cate_temp[index] ? '““””' + title.fontcolor(分类颜色) : title,
                         url: $(pd(item, 分类链接) + '#noLoading#').lazyRule((params) => {
@@ -445,19 +444,25 @@ const Apollo = {
                 }]
             }
         })
-        var src = "https://javfinder.ai/stream/" + html.match(/iframe src.*?"(.*?)"/)[1].split("#")[1]
+        var src = "https://javfinder.ai/stream/" + html.match(/iframe src.*?"(.*?)"/)[1].split("#")[1];
         Apollo.d.push({
             pic_url: MY_PARAMS.img, //pdfh(html, '.object-fit-contain&&poster') + '@Referer=' + Apollo.url,
             url: src + $("").lazyRule(() => {
                 try {
-                    var location = JSON.parse(fetch(input))
-                        .list[0].url
-                    var master = fetch(location);
+                    var location = JSON.parse(fetch(input)).list[0].url;
+                    var master = fetchCodeByWebView(location, {
+                        headers: {
+                            Referer: "https://javfinder.ai/"
+                        }
+                    });
                     var script = master.match(/eval([\s\S]+?)<\/script/)[1];
                     //log(script)
                     var uas = eval(script)
-                    var jwplayer = uas.match(/"(https?.*m3u8.*?)"/)[1]
-                    //log(jwplayer)  
+                    var link = uas.match(/var links[^\;]+/)[0];
+                    //log(link)
+                    eval(link)
+                    var jwplayer = "https://xenolyzb.com" + links.hls4//uas.match(/"(https?.*m3u8.*?)"/)[1]
+                    //log(jwplayer)
                     return jwplayer + ";{Referer@" + getHome(location) + "/}"
                 } catch {
                     return "toast://网络出错请重试"
@@ -711,7 +716,6 @@ const Apollo = {
 </body>
 </html>
 `;
-
         //轮播函数
         function lunbo(d, image, sui) {
             let Html = getHtml(image);
@@ -725,7 +729,7 @@ const Apollo = {
                 extra: {
                     js: $.toString((Html) => {
                         // 监听窗口大小变化
-                        window.addEventListener('resize', function () {
+                        window.addEventListener('resize', function() {
                             // 获取当前窗口的宽度
                             var screenWidth = window.innerWidth;
                             // 计算窗口宽度的49%
@@ -871,7 +875,7 @@ const Apollo = {
         var lazy
         pdfa(html, 线路).forEach(data => {
             data = pdfh(data, 线路名)
-            if (typeof (排除) != 'undefined' && 排除 != '') {
+            if (typeof(排除) != 'undefined' && 排除 != '') {
                 data = data.replace(new RegExp(排除, "g"), "")
             }
             tabs.push(data)
@@ -1006,7 +1010,7 @@ const Apollo = {
             }
 
             const mark = 'desc';
-            num = typeof (num) == 'undefined' ? 100 : num
+            num = typeof(num) == 'undefined' ? 100 : num
             desc = desc.startsWith('　　') ? desc : '　　' + desc;
             desc = desc.replace(/'/g, "&#39;");
             desc = desc.replace(/\r\n/g, "<br>");
@@ -1019,7 +1023,7 @@ const Apollo = {
                 hide: "#8A2BE2"
             }
 
-            var lazy = $(`#noLoading #`).lazyRule((dc, sdc, m, cs) => {
+            var lazy = $(`#noLoading#`).lazyRule((dc, sdc, m, cs) => {
                 var show = storage0.getItem(m, '0');
                 var title = findItem('desc').title;
                 var re = /(<\/big><br>.*?>).+/g;
@@ -1089,7 +1093,6 @@ const Apollo = {
                     const rand = Math.floor(Math.random() * 99999) + 100000
                     return rand * 1000
                 }
-
                 const post_data = init_data(from, to)
                 post_data.source = text
                 post_data.request_id = getRandomNumber()
@@ -1117,8 +1120,8 @@ const Apollo = {
                     if (text != "") {
                         var lang = "https://test.niutrans.com/NiuTransServer/language?src_text=" + text + "&source=text";
                         var from = JSON.parse(fetch(lang, {
-                            timeout: 1000
-                        }))
+                                timeout: 1000
+                            }))
                             .language;
                         var result = post(url, {
                             body: {
